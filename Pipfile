@@ -6,6 +6,12 @@ name = "pypi"
 [packages]
 flask = "*"
 flask-cors = "*"
+langchain = "*"
+openai = "*"
+python-dotenv = "*"
+pypdf = "*"
+chromadb = "*"
+tiktoken = "*"
 
 [dev-packages]
 

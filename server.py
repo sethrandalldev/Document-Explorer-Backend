@@ -2,7 +2,8 @@ from flask import Flask
 from flask import request
 from os import scandir
 from flask_cors import CORS
-
+from langchain.document_loaders import PyPDFLoader
+from langchain.indexes import VectorstoreIndexCreator
 
 
 app = Flask(__name__)
@@ -10,15 +11,19 @@ CORS(app)
 
 @app.post("/question")
 def get_question():
-    print(request.form.get("document_id"))
-    print(request.form.get("question"))
-    return "Document"
+    loader = PyPDFLoader(f"files/{request.form.get('document_title')}")
+    index = VectorstoreIndexCreator().from_loaders([loader])
+    query = request.form.get("question")
+    answer = index.query(query)
+    return {
+        "answer": answer
+    }
 
 @app.post("/documents")
 def add_document():
     print(request.form)
     file = request.files.get("document")
-    file.save(f"files/{request.form.get('title')}.pdf")
+    file.save(f"files/{request.form.get('title')}")
     return "Success", 204
 
 @app.get("/documents")
